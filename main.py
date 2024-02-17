@@ -1,10 +1,11 @@
 import random
 import pygame as pg
+import time
 
 class Bird(pg.sprite.Sprite):
     def __init__(self):
         pg.sprite.Sprite.__init__(self)
-        self.image = pg.image.load("images/bird.png")
+        self.image = pg.image.load("images/bird.png").convert_alpha()
         self.image = pg.transform.scale(self.image, (80, 80))
         self.rect = self.image.get_rect()
         self.rect.topleft = (25, 25)
@@ -33,7 +34,7 @@ class Coin(pg.sprite.Sprite):
     def __init__(self):
         pg.sprite.Sprite.__init__(self)
 
-        self.image = pg.image.load("images/coin.png")
+        self.image = pg.image.load("images/coin.png").convert_alpha()
         self.image = pg.transform.scale(self.image, (40, 40))
         
         self.rect = self.image.get_rect()
@@ -43,32 +44,49 @@ class Butterfly(pg.sprite.Sprite):
     def __init__(self):
         pg.sprite.Sprite.__init__(self)
         
-        self.image = pg.image.load("images/бабочка.png")
+        self.image = pg.image.load("images/бабочка.png").convert_alpha()
         self.image = pg.transform.scale(self.image, (60, 60))
 
         self.rect = self.image.get_rect()
         
-        self.rect.x = random.randint(0, window_width - 60)
+        self.rect.x = random.randint(100, window_width - 60)
         self.rect.y = random.randint(0, window_hight - 60)
 
     def update(self):
-        v = 2
+        v = random.randint(1, 2)
         
-        if random.randint(0, 1) == 0:
-            self.rect.x -= v
+        if random.randint(0, 1):
+            if self.rect.left > 0:
+                self.rect.x -= v
+            else:
+                self.rect.x += v
         else:
-            self.rect.x += v
+            if self.rect.right < window_width:
+                self.rect.x += v
+            else:
+                self.rect.x -= v
 
-        if random.randint(0, 1) == 0:
-            self.rect.y -= v
+        if random.randint(0, 1):
+            if self.rect.top > 0:
+                self.rect.y -= v
+            else:
+                self.rect.y += v
         else:
-            self.rect.y += v
+            if self.rect.bottom < window_hight:
+                self.rect.y += v
+            else:
+                self.rect.y -= v
+            
 
 pg.init()
 
 
 window_width = 600
 window_hight = 300
+
+display_surface = pg.display.set_mode((window_width, window_hight))
+pg.display.set_caption('Hungry Bird!')
+
 
 #Создание объектов
 
@@ -79,8 +97,7 @@ butterflies = pg.sprite.Group()
 for _ in range(5):
     butterflies.add(Butterfly())
 
-display_surface = pg.display.set_mode((window_width, window_hight))
-pg.display.set_caption('Hungry Bird!')
+
 
 FPS = 60
 clock = pg.time.Clock()
@@ -112,6 +129,7 @@ while running:
         if event.type == pg.QUIT:
             running = False
 
+
     butterflies.update()
     bird.update()
 
@@ -137,6 +155,7 @@ while running:
     hits = pg.sprite.spritecollide(bird, butterflies, True)
     for hit in hits:
         heart_count -= 1
+        time.sleep(0.2)
         if heart_count <=0:
             running = False
 
