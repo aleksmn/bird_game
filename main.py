@@ -53,7 +53,7 @@ class Butterfly(pg.sprite.Sprite):
         self.rect.y = random.randint(0, window_hight - 60)
 
     def update(self):
-        v = random.randint(1, 2)
+        v = 1
         
         if random.randint(0, 1):
             if self.rect.left > 0:
@@ -65,6 +65,7 @@ class Butterfly(pg.sprite.Sprite):
                 self.rect.x += v
             else:
                 self.rect.x -= v
+
 
         if random.randint(0, 1):
             if self.rect.top > 0:
